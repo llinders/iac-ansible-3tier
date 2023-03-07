@@ -1,0 +1,31 @@
+---
+- name: add user gerrit Debian based
+  user:
+    name: "{{ user }}"
+    password: "{{ password }}"
+    groups:
+      - sudo
+    state: present
+  when:
+    - ansible_facts.os_family == "Debian"
+
+- name: add user gerrit RedHat based
+  user:
+    name: "{{ user }}"
+    password: "{{ password }}"
+    groups:
+      - wheel
+    state: present
+  when:
+    - ansible_facts.os_family == "RedHat"
+
+- name: add public key to authorized_keys
+  authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/iac_v22.pub') }}"
+
+- name: make sure ufw is disabled on Debian Based
+  shell: ufw disable
+  when:
+    - ansible_facts.os_family == "Debian"
