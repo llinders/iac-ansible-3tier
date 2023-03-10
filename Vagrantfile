@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
         esxi.guest_numvcpus = '1'
     end
 
-    # Apache webserver 1.
+    # Apache webserver 1
     config.vm.define "www1" do |www1|
         www1.vm.hostname = "webserver01.iac"
         www1.vm.define "192.168.1.50"
@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    # Apache webserver 2.
+    # Apache webserver 2
     config.vm.define "www2" do |www2|
         www2.vm.hostname = "webserver02.iac"
         www2.vm.define "192.168.1.51"

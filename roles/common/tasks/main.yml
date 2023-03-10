@@ -1,5 +1,5 @@
 ---
-- name: add user gerrit Debian based
+- name: add user admin Debian based
   user:
     name: "{{ user }}"
     password: "{{ password }}"
@@ -9,7 +9,7 @@
   when:
     - ansible_facts.os_family == "Debian"
 
-- name: add user gerrit RedHat based
+- name: add user admin RedHat based
   user:
     name: "{{ user }}"
     password: "{{ password }}"
