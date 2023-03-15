@@ -18,8 +18,8 @@ Vagrant.configure("2") do |config|
     # Apache webserver 1
     config.vm.define "www1" do |www1|
         www1.vm.hostname = "webserver01.iac"
-        www1.vm.define "192.168.1.50"
-        www1.vm.network :private_network, ip: "192.168.1.50"
+        www1.vm.define "192.168.1.51"
+        www1.vm.network :private_network, ip: "192.168.1.51"
     
         www1.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -33,8 +33,8 @@ Vagrant.configure("2") do |config|
     # Apache webserver 2
     config.vm.define "www2" do |www2|
         www2.vm.hostname = "webserver02.iac"
-        www2.vm.define "192.168.1.51"
-        www2.vm.network :private_network, ip: "192.168.1.51"
+        www2.vm.define "192.168.1.52"
+        www2.vm.network :private_network, ip: "192.168.1.52"
 
         www2.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -48,8 +48,8 @@ Vagrant.configure("2") do |config|
     # Load balancer
     config.vm.define "lb" do |lb|
         lb.vm.hostname = "lb.iac"
-        lb.vm.define "lb"
-        lb.vm.network :private_network, ip: "192.168.1.52"
+        lb.vm.define "192.168.1.53"
+        lb.vm.network :private_network, ip: "192.168.1.53"
 
         lb.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -63,8 +63,8 @@ Vagrant.configure("2") do |config|
     # Database
     config.vm.define "db" do |db|
         db.vm.hostname = "db.iac"
-        db.vm.define "192.168.1.53"
-        db.vm.network :private_network, ip: "192.168.1.53"
+        db.vm.define "192.168.1.54"
+        db.vm.network :private_network, ip: "192.168.1.54"
 
         db.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
