@@ -5,6 +5,7 @@
 
   roles:
     - common
+  tags: [ common ]
 
 # web servers
 - hosts: webservers
@@ -12,6 +13,7 @@
 
   roles:
     - apache-webserver
+  tags: [ webservers, web ]
 
 # load balancer
 - hosts: loadbalancer
@@ -19,6 +21,7 @@
     
   roles:
     - haproxy-loadbalancer
+  tags: [ loadbalancer, lb ]
 
 # database
 - hosts: database
@@ -26,3 +29,4 @@
 
   roles:
     - mysql-database
+  tags: [ database, db ]
