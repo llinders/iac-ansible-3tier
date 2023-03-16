@@ -1,8 +1,0 @@
----
-app_user: "vagrant"
-http_host: "skylab"
-http_conf: "skylab.conf"
-http_port: "80"
-disable_default: true
-user: "admin"
-password: ""
