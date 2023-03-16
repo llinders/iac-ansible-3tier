@@ -1,7 +1,5 @@
 ### Ansible ###
 *.retry
-# Vault password file
-.vault-password-file/
 
 ### Vagrant ###
 # General
@@ -12,3 +10,6 @@
 
 ### Vagrant Patch ###
 *.box
+
+### Secrets ###
+.secret/
