@@ -7,21 +7,21 @@
     - common
 
 # web servers
-- hosts: web
+- hosts: webservers
   become: true
 
   roles:
     - apache-webserver
 
 # load balancer
-- hosts: lb
+- hosts: loadbalancer
   become: true
     
   roles:
     - haproxy-loadbalancer
 
 # database
-- hosts: db
+- hosts: database
   become: true
 
   roles:
