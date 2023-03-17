@@ -22,8 +22,9 @@ frontend http-in
 
 backend webapp
     balance roundrobin
-    server webserver1 192.168.1.51:80 check
-    server webserver2 192.168.1.52:80 check
+{% for server in backend_server_list %}
+    server {{ server.name }} {{ server.ip_address }}:{{ server.port }} check
+{% endfor %}
 
 listen stats
     bind *:8080

@@ -15,7 +15,6 @@
     state: present  
 
 - name: Archive default HAProxy configuration file
-  #copy: remote_src=True src=/etc/haproxy/haproxy.cfg dest=/etc/haproxy/haproxy.cfg.old
   command: mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.old
   # The following ensures the command is only invoked when /etc/haproxy/haproxy.cgf exists and /etc/haproxy/haproxy.cfg.old does not
   args:
@@ -24,20 +23,7 @@
 
 - name: Copy HAProxy configuration file to host
   template:
-    src: haproxy.cfg
+    src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
     mode: 0600
   notify: Restart HAProxy
-
-- name: Ensure HAProxy service is running
-  service:
-    name: haproxy
-    state: restarted
-
-# - name: Forward traffic to webservers with socat
-#   shell: "socat TCP-LISTEN:{{ local_port }},fork TCP:{{ item }}:{{ remote_port }}"
-#   async: 0
-#   poll: 0
-#   loop:
-#     - "{{ remote_host1 }}"
-#     - "{{ remote_host2 }}"

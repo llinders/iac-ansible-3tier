@@ -1,5 +1,9 @@
 ---
-local_port: 80
-remote_host1: 192.168.1.51
-remote_host2: 192.168.1.52
-remote_port: 80
+frontend_port: 80
+backend_server_list:
+  - name: web1
+    ip_address: 192.168.1.51
+    port: 80
+  - name: web2
+    ip_address: 192.168.1.52
+    port: 80
