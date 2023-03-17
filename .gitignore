@@ -13,3 +13,7 @@
 
 ### Secrets ###
 .secret/
+
+### Visual Studio ###
+*.code-workspace
+.vscode/
