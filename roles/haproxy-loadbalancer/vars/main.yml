@@ -1,0 +1,5 @@
+---
+local_port: 80
+remote_host1: 192.168.1.51
+remote_host2: 192.168.1.52
+remote_port: 80
