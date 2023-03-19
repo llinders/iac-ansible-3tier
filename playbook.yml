@@ -28,5 +28,5 @@
   become: true
 
   roles:
-    - mysql-database
+    - postgresql-database
   tags: [ database, db ]

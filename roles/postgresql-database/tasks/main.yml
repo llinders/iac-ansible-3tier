@@ -1,0 +1,62 @@
+---
+- name: Install PostgreSQL
+  apt:
+    name: postgresql
+    state: latest
+    update_cache: yes
+
+- name: Install Python and other required packages for PostgreSQL
+  apt:
+    pkg:
+      - python
+      - pip
+      - acl # Required for modifying Access Control Lists
+    state: latest
+
+- name: Install psycopg2 python package as the PostgreSQL database adapter
+  pip:
+    name: psycopg2-binary
+    state: latest
+
+- name: Configure PostgreSQL
+  template:
+    src: postgresql.conf.j2
+    dest: /etc/postgresql/12/main/postgresql.conf
+
+- name: Configure PostgreSQL Client Authentication
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/12/main/pg_hba.conf
+  notify:
+    - Restart PostgreSQL
+
+- name: Ensure the PostgreSQL service is running 
+  service: name=postgresql state=started enabled=yes
+
+- name: Create PostgreSQL database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+
+- name: Create PostgreSQL user 
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ db_name }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: "*.*:ALL"
+    state: present
+
+# - name: Grant the right privileges to the PostgreSQL user
+#   become: true
+#   become_user: postgres
+#   postgresql_privs:
+#     db: "{{ db_name }}"
+#     login: "{{ db_user }}"
+#     password: "{{ db_password }}"
+#     roles: admin_user
+    
+   
