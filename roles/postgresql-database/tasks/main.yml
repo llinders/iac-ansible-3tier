@@ -40,23 +40,12 @@
     name: "{{ db_name }}"
     state: present
 
-- name: Create PostgreSQL user 
+- name: Create PostgreSQL user and grant the right privileges
   become: true
   become_user: postgres
   postgresql_user:
     db: "{{ db_name }}"
     name: "{{ db_user }}"
     password: "{{ db_password }}"
-    priv: "*.*:ALL"
+    priv: ALL
     state: present
-
-# - name: Grant the right privileges to the PostgreSQL user
-#   become: true
-#   become_user: postgres
-#   postgresql_privs:
-#     db: "{{ db_name }}"
-#     login: "{{ db_user }}"
-#     password: "{{ db_password }}"
-#     roles: admin_user
-    
-   
