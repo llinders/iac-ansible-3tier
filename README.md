@@ -18,5 +18,5 @@ Optionally you can also alter the Vagrantfile to deploy the Virtual Machines to 
 3. Alter all ip addresses in the Vagrantfile to match your infrastructure.
 
 ### Running the project
-Once you have completed the setup steps you can deploy the infrastructure with the following command:
+Once you have completed the setup steps you can deploy the infrastructure with the following command from command line:
 `vagrant up`

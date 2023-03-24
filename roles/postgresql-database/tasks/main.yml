@@ -49,3 +49,16 @@
     password: "{{ db_password }}"
     priv: ALL
     state: present
+
+- name: Transfer create table script to host
+  template:
+    src: create_table_script.sql
+    dest: /var/lib/postgresql/create_table_script.sql
+
+- name: Execute create table script
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_script:
+    db: "{{ db_name }}"
+    path: /var/lib/postgresql/create_table_script.sql
+    
