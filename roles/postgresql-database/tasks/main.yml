@@ -61,4 +61,4 @@
   community.postgresql.postgresql_script:
     db: "{{ db_name }}"
     path: /var/lib/postgresql/create_table_script.sql
-    
+  
