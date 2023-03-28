@@ -1,0 +1,13 @@
+mysql_port: "3306"
+mysql_bind_address: '0.0.0.0'
+
+mysql_root_password: "theR00tP455w0rd"
+mysql_databases:
+- name: iac-db
+
+mysql_users:
+  - name: admin
+    host: "%"
+    password: admin-password
+    priv: "iac-db.*:ALL"
+

@@ -1,7 +1,11 @@
 --- 
-- name: Ensure Apache is installed
+- name: Install Apache, PHP, and PHP for PostgreSQL
   apt: 
-    name: apache2
+    pkg:
+      - apache2
+      - php
+      - libapache2-mod-php
+      - php-mysql
     state: present
     update_cache: yes
 
@@ -12,10 +16,12 @@
     owner: "{{ app_user }}"
     mode: '0755'
 
-- name: Set up index.html
+- name: Copy web files to host
   template:
-    src: "index.html.j2"
-    dest: "/var/www/{{ http_host }}/index.html"
+    src: "{{ item }}"
+    dest: "/var/www/{{ http_host }}/"
+  with_fileglob:
+    - templates/web_files/*
 
 - name: Set up Apache virtualhost
   template:
@@ -31,5 +37,3 @@
   shell: /usr/sbin/a2dissite 000-default.conf
   when: disable_default
   notify: Reload Apache
-
-  

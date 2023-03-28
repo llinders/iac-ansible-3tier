@@ -26,7 +26,10 @@
 # database
 - hosts: database
   become: true
+  vars_files:
+    - vars/mysql.yml
 
   roles:
-    - postgresql-database
+    - { role: geerlingguy.mysql }
+  
   tags: [ database, db ]

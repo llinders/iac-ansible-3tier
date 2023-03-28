@@ -1,15 +1,15 @@
 ---
 - name: Reload PostgreSQL
   service:
-    name: haproxy
+    name: postgresql
     state: reloaded
 
 - name: Restart PostgreSQL
   service:
-    name: haproxy
+    name: postgresql
     state: restarted
 
 - name: Start PostgreSQL
   service:
-    name: haproxy
+    name: postgresql
     state: started

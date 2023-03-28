@@ -1,0 +1,4 @@
+--- 
+db_name: iac-db
+db_user: admin
+db_password: db_password
