@@ -30,6 +30,7 @@
     - vars/mysql.yml
 
   roles:
-    - { role: geerlingguy.mysql }
+    - geerlingguy.mysql
+    - mysql-database 
   
   tags: [ database, db ]

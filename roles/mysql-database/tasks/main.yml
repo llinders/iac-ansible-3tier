@@ -1,0 +1,8 @@
+---
+- name: Copy create table script to host
+  template:
+    src: create_table_script.sql
+    dest: /home/admin/create_table_script.sql
+
+- name: Execute create table script
+  shell: mysql -D iac-db < /home/admin/create_table_script.sql
