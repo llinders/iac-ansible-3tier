@@ -45,6 +45,20 @@ Vagrant.configure("2") do |config|
         end
     end
 
+    config.vm.define "www3" do |www3|
+        www3.vm.hostname = "webserver03.iac"
+        www3.vm.define "webserver03"
+        www3.vm.network :private_network, ip: "10.0.1.2"
+
+        www3.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+            ansible.extra_vars = {
+              ansible_user: 'vagrant',
+              ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+            }
+        end
+    end
+
     # Load balancer
     config.vm.define "lb" do |lb|
         lb.vm.hostname = "lb.iac"
