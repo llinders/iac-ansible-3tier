@@ -1,11 +1,14 @@
 <?php
 	require_once 'conn.php';
-	error_reporting(E_ALL);
 	if(ISSET($_POST['add'])){
 		if($_POST['task'] != ""){
-			$task = $_POST['task'];
 			
-			$conn->query($conn, "INSERT INTO `Task` VALUES('', '$task')");
+			$sql = 'INSERT INTO Task (task) VALUES (?)';
+			$stmt = $conn->prepare($sql);
+			$stmt->bind_param('s', trim($_POST['task']));
+
+			$stmt->execute();
+			
 			header('Location: index.php');
 		}
 	}

@@ -14,14 +14,23 @@
     path: "/var/www/{{ http_host }}"
     state: directory
     owner: "{{ app_user }}"
-    mode: '0755'
+    mode: "0755"
 
-- name: Copy web files to host
-  template:
+- name: Copy regular web files to host
+  copy:
     src: "{{ item }}"
     dest: "/var/www/{{ http_host }}/"
+    owner: "{{ app_user }}"
+    mode: "0644"
   with_fileglob:
-    - templates/web_files/*
+    - templates/web_files/*.php
+
+- name: Copy templated database connection file to host
+  template:
+    src: web_files/conn.php.j2
+    dest: /var/www/{{ http_host }}/conn.php
+    owner: "{{ app_user }}"
+    mode: "0644"
 
 - name: Set up Apache virtualhost
   template:

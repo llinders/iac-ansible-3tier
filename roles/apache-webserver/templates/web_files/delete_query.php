@@ -2,9 +2,12 @@
 	require_once 'conn.php';
 	
 	if($_GET['task_id']){
-		$task_id = $_GET['task_id'];
-		
-		$pg_query($conn, "DELETE FROM `task` WHERE `id` = $task_id");
+		$sql = 'DELETE FROM Task WHERE id = ?';
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param('i', $_GET['task_id']);
+
+		$stmt->execute();
+
 		header("location: index.php");
 	}	
 ?>
