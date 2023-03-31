@@ -1,0 +1,26 @@
+{
+    "customers":[
+        {
+            "customer_number": "1",
+            "username": "Henk",
+            "test_env_setup": {
+                "deployed": "true"
+            },
+            "prod_env_setup": {
+                "deployed": "true",
+                "number_of_webservers": "4"
+            }
+        },
+        {
+            "customer_number": "2",
+            "username": "Jaap",
+            "test_env_setup": {
+                "deployed": "true"
+            },
+            "prod_env_setup": {
+                "deployed": "true",
+                "number_of_webservers": "4"
+            }
+        }
+    ]
+}
