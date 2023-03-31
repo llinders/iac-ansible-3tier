@@ -1,0 +1,64 @@
+[
+    {
+        "customer_number": "1",
+        "username": "Henk",
+        "test_env_setup": {
+            "deployed": "true",
+            "webserver_ip": "0.0.0.0",
+            "database_ip": "0.0.0.0"
+        },
+        "prod_env_setup": {
+            "deployed": "true",
+            "database_ip": "0.0.0.0",
+            "loadbalancer_ip": "0.0.0.0",
+            "webservers": {
+                "server1_ip": "0.0.0.0",
+                "server2_ip": "0.0.0.0"
+            }
+        }
+    },
+    {
+        "customer_number": "2",
+        "username": "Jaap",
+        "test_env_setup": {
+            "deployed": "true"
+        },
+        "prod_env_setup": {
+            "deployed": "true",
+            "number_of_webservers": "4"
+        }
+    },
+    {
+        "customer_number": "2",
+        "username": "test",
+        "test_env_setup": {
+            "deployed": "false"
+        },
+        "prod_env_setup": {
+            "deployed": "false",
+            "number_of_webservers": "0"
+        }
+    },
+    {
+        "customer_number": "2",
+        "username": "test",
+        "test_env_setup": {
+            "deployed": "false"
+        },
+        "prod_env_setup": {
+            "deployed": "false",
+            "number_of_webservers": "0"
+        }
+    },
+    {
+        "customer_number": 3,
+        "username": "test",
+        "test_env_setup": {
+            "deployed": "false"
+        },
+        "prod_env_setup": {
+            "deployed": "false",
+            "number_of_webservers": "0"
+        }
+    }
+]

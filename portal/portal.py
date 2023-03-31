@@ -2,10 +2,11 @@ import vagrant
 import os
 import sys
 from fabric.api import *
-import json
 from art import tprint
 
-CUSTOMER_INVENTORY_FILE = 'portal/customer_inv.json'
+from portal.menu.menu_navigation import Menu, show_menu
+import data.customer_data_utils as customer_data_utils
+import portal.deployment.environment_manager as env_manager
 
 def menu():
     ''' Main menu '''
@@ -53,24 +54,11 @@ def menu():
     else:
         print('Sorry, de waarde moet tussen 1 en 5 zijn')
 
-def main_menu():
+def startup_menu():
     ''' Main menu '''
 
-    chosen_element = 0
+    show_menu(Menu.STARTUP_MENU)
 
-    print("#############################################################################")
-    print("########                                                             ########")
-    print("########                   Self Service Portal                       ########")
-    print("######## ----------------------------------------------------------- ########")
-    print("########        Are you a new customer or existing customer?         ########")
-    print("######## ----------------------------------------------------------- ########")
-    print("########                                                             ########")
-    print("########                         Choose:                             ########")
-    print("########                                                             ########")
-    print("########           1) New customer  |  2) Existing customer          ########")
-    print("########      3) Exit                                                ########")
-    print("########                                                             ########")
-    print("#############################################################################")
     chosen_element = input("Choose a number between 1 and 3: ")
 
     if int(chosen_element) == 1:
@@ -80,36 +68,14 @@ def main_menu():
     else:
         print('You have to enter a value between 1 and 3')
 
-def load_customer_data():
-    ''' Load customer data from customer inventory file '''
-    with open(CUSTOMER_INVENTORY_FILE, 'r') as f:
-        customer_data = json.load(f)['customers']
-    return customer_data
 
-def add_customer_to_file(username):
-    new_customer_number = find_available_customer_number()
-    
-    new_customer_profile = {
-        'customer_number': new_customer_number,
-        'username': username,
-        'test_env_setup': {
-            'deployed': 'false'
-        },
-        'prod_env_setup': {
-            'deployed': 'false',
-            'number_of_webservers': '0'
-        }
-    }
-
-    with open(CUSTOMER_INVENTORY_FILE, 'w') as inv_file:
-        inv_file.append(new_customer_profile)
 
 def new_customer():
     ''' New customer flow '''
     tprint('Welcome!')
     username = input('Please enter a username: ')
     
-    add_customer_to_file(username)
+    customer_data_utils.write_new_customer(username)
 
     print("#############################################################################")
     print("########                                                             ########")
@@ -128,29 +94,14 @@ def new_customer():
     print("#############################################################################")
     chosen_element = input("Choose a number between 1 and 3: ")
 
-
-
-    
-    
+    if (chosen_element == 1):
+        env_manager.deploy_new_test_environment()
 
     return
-
-def find_available_customer_number():
-    ''' Find next available customer number '''
-    customer_data = load_customer_data()
-        
-    customer_numbers = []
-    for customer in customer_data:
-        customer_numbers.append(customer['customer_number'])
-    
-    return max(customer_numbers)
 
 def existing_customer_menu():
     ''' Existing customer menu '''
 
-
-def alter_deployment():
-    return
 
 def modify_vagrantfile():
     return
