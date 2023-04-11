@@ -1,15 +1,18 @@
 import json
 
-CUSTOMER_INVENTORY_FILE = 'portal/data/customer_data.json'
+__CUSTOMER_INVENTORY_FILE__ = 'portal/data/customer_data.json'
 
-def load_customer_data():
-    ''' Load customer data from customer inventory file '''
-    with open(CUSTOMER_INVENTORY_FILE, 'r') as f:
-        customer_data = json.load(f)
-    return customer_data
+def get_customer(customer_number):
+    '''Get data from a specific customer'''
+    customers = _load_all_customer_data()
+    for customer in customers:
+        if (customer['customer_number'] == customer_number):
+            return customer
+        print('Customer with customer number %d could not be found'%customer_number)
 
 def write_new_customer(username):
-    new_customer_number = find_available_customer_number()
+    '''Register a new customer'''
+    new_customer_number = _find_available_customer_number()
     
     new_customer_profile = {
         'customer_number': new_customer_number,
@@ -18,13 +21,40 @@ def write_new_customer(username):
             'deployed': 'false'
         },
         'prod_env_setup': {
-            'deployed': 'false',
-            'number_of_webservers': '0'
+            'deployed': 'false'
         }
     }
 
-    customer_data = load_customer_data()
+    customer_data = _load_all_customer_data()
     customer_data.append(new_customer_profile)
 
-    with open(CUSTOMER_INVENTORY_FILE, 'w') as inv_file:
+    with open(__CUSTOMER_INVENTORY_FILE__, 'w') as inv_file:
         json.dump(customer_data, inv_file, indent=4)
+
+def update_customer(customer_number):
+    return
+
+def check_if_exists(customer_number):
+    '''Checks if a customer exists with `customer_number` and returns True if it does'''
+    customers = _load_all_customer_data()
+    for customer in customers:
+        if customer.get('customer_number') == customer_number: return True
+    return False
+
+def _load_all_customer_data():
+    ''' Load all customer data from customer inventory file '''
+    with open(__CUSTOMER_INVENTORY_FILE__, 'r') as f:
+        customer_data = json.load(f)
+    return customer_data
+
+def _find_available_customer_number():
+    ''' Private function
+    Find next available customer number 
+    '''
+    customer_data = _load_all_customer_data()
+        
+    customer_numbers = []
+    for customer in customer_data:
+        customer_numbers.append(customer['customer_number'])
+    
+    return int(max(customer_numbers))+1
