@@ -129,30 +129,31 @@ def show_menu(menu, username='user', customer_number=None):
             print("########                                                             ########")
             print("#############################################################################")
            
-            customer_info = cdu.get_customer(customer_number)
-            test_env = customer_info['test_env_setup']
-            prod_env = customer_info['prod_env_setup']
-            
-            print('                 ## Information about current deployment ##')
-            print('Test environment:')
-            if test_env['deployed'] == False: print('\t' + 'NOT DEPLOYED')
-            else:
-                for item in test_env:
-                    print('\t%s:\t\t%s'%(item.replace('_ip', ''), test_env.get(item)))
-            
-            print('Production environment:')
-            
-            for item in prod_env:
-                if (item != 'webservers'):
-                    print('\t%s:\t\t%s'%(item.replace('_ip', ''), prod_env.get(item)))
-                else:
-                    print('\t' + 'webservers:')
-                    for server in prod_env['webservers']:
-                        print('\t\t%s:\t%s'%(server.replace('_ip', ''), prod_env.get('webservers').get(server)))
+            _print_deployment_info(customer_number)
                 
         case _:
             raise ValueError('Not a valid menu')
-            
+
+
+def _print_deployment_info(customer_number):
+    customer_info = cdu.get_customer(customer_number)
+    test_env = customer_info['test_env_setup']
+    prod_env = customer_info['prod_env_setup']
+    
+    print('                 ## Information about current deployment ##')
+    print('Test environment:')
+    for item in test_env:
+        print('\t%s:\t\t%s'%(item.replace('_ip', ''), test_env.get(item)))
+    
+    print('Production environment:')
+    
+    for item in prod_env:
+        if (item != 'webservers'):
+            print('\t%s:\t\t%s'%(item.replace('_ip', ''), prod_env.get(item)))
+        else:
+            print('\t' + 'webservers:')
+            for server in prod_env['webservers']:
+                print('\t\t%s:\t%s'%(server.replace('_ip', ''), prod_env.get('webservers').get(server)))
 
 def _clear_screen():
     os.system('cls||clear')
