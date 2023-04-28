@@ -16,7 +16,7 @@ class Menu(Enum):
     MANAGE_PROD_ENV = 7
 
 
-def show_menu(menu, username='user', customer_number=None):
+def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
     INVALID_INPUT_MSG = 'Please enter a valid input number'
 
     _clear_screen()

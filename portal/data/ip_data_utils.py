@@ -2,7 +2,7 @@ import json
 
 __AVAILABLE_IP_ADDRESSES_FILE__ = './portal/data/available_ip_addresses.json'
 
-def find_next_available_ips(amount) -> list:
+def find_next_available_ips(amount: int) -> list:
     ip_data: dict
     with open(__AVAILABLE_IP_ADDRESSES_FILE__, 'r') as f:
         ip_data = json.load(f)
