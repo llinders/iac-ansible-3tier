@@ -3,7 +3,9 @@
 In this project a 3-tiered application is automatically deployed using Vagrant and Ansible for provisioning. The application consists of:
 * An HAProxy load balancer, 
 * Apache servers that host the web-application
-* A PostgreSQL database
+* A MySQL database
+
+The Python portal can be used to roll out either a test-environmnet or a production environment. The test-environment consists of only a web-server and a database server. The production environment consists of a customer number of webserver which you can choose to your liking, including a loadbalancer and a database server. The infrastructure is rolled out and configured automatically.
 
 ## How to install and run the project
 ### Prerequisite
