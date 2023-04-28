@@ -12,6 +12,8 @@ class Menu(Enum):
     LOGIN = 3
     LOGIN_FAILED = 4
     EXISTING_CUSTOMER = 5
+    MANAGE_TEST_ENV = 6
+    MANAGE_PROD_ENV = 7
 
 
 def show_menu(menu, username='user', customer_number=None):
@@ -117,20 +119,80 @@ def show_menu(menu, username='user', customer_number=None):
             print("########                                                             ########")
             print("########                   Self Service Portal                       ########")
             print("######## ----------------------------------------------------------- ########")
-            print("########                     Welcome back, %s!                       ########"%username)
-            print("########  Would you like to deploy a test or production environment? ########")
-            print("########      You can alway add or remove an environment later       ########")
+            print("########                          Hi, %s!                       ########"%username)
+            print("########     Choose to manage your test or production environment    ########")
             print("######## ----------------------------------------------------------- ########")
             print("########                                                             ########")
             print("########                         Choose:                             ########")
             print("########                                                             ########")
-            print("########      1) Test environment  |  2) Production environment      ########")
-            print("########      3) Exit                                                ########")
+            print("########             1) Manage test environment                      ########")
+            print("########             2) Manage production environment                ########")
+            print("########             3) Exit                                         ########")
             print("########                                                             ########")
             print("#############################################################################")
-           
             _print_deployment_info(customer_number)
-                
+
+            chosen_element = input("Choose a number between 1 and 3: ")
+
+            match chosen_element:
+                case 1:
+                    show_menu(Menu.MANAGE_TEST_ENV, username, customer_number)
+                case 2:
+                    show_menu(Menu.MANAGE_PROD_ENV, username, customer_number)
+                case 3:
+                    print('exit')
+        
+        case Menu.MANAGE_TEST_ENV:
+            # 1. deploy 2. remove 3. go back
+            print("#############################################################################")
+            print("########                                                             ########")
+            print("########                   Self Service Portal                       ########")
+            print("######## ----------------------------------------------------------- ########")
+            print("########                Manage your test environment                 ########")
+            print("######## ----------------------------------------------------------- ########")
+            print("########                                                             ########")
+            print("########                         Choose:                             ########")
+            print("########                                                             ########")
+            print("########             1) Deploy test environment                      ########")
+            print("########             2) Destroy test environment                     ########")
+            print("########             3) Return to main menu                          ########")
+            print("########                                                             ########")
+            print("#############################################################################")
+
+            chosen_element = input("Choose a number between 1 and 3: ")
+            
+            match chosen_element:
+                case 1:
+                    # deploy test if not exists
+                    em.deploy_new_test_environment()
+
+                case 2:
+                    # destroy test if exists'
+                    em.delete_test_environment()
+
+                case 3:
+                    show_menu(Menu.EXISTING_CUSTOMER, username, customer_number)
+
+        case Menu.MANAGE_PROD_ENV:
+            # 1. deploy 2. Scale up/down 3. remove 4. go back 
+            print("#############################################################################")
+            print("########                                                             ########")
+            print("########                   Self Service Portal                       ########")
+            print("######## ----------------------------------------------------------- ########")
+            print("########            Manage your production environment               ########")
+            print("######## ----------------------------------------------------------- ########")
+            print("########                                                             ########")
+            print("########                         Choose:                             ########")
+            print("########                                                             ########")
+            print("########      1) Deploy prod environment                             ########")
+            print("########      2) Upscale or downscale existing prod environment      ########")
+            print("########      3) Destroy prod environment                            ########")
+            print("########      4) Return to main menu                                 ########")
+            print("########                                                             ########")
+            print("#############################################################################")
+
+            chosen_element = input("Choose a number between 1 and 4: ")
+
         case _:
             raise ValueError('Not a valid menu')
 
@@ -146,7 +208,6 @@ def _print_deployment_info(customer_number):
         print('\t%s:\t\t%s'%(item.replace('_ip', ''), test_env.get(item)))
     
     print('Production environment:')
-    
     for item in prod_env:
         if (item != 'webservers'):
             print('\t%s:\t\t%s'%(item.replace('_ip', ''), prod_env.get(item)))
@@ -154,6 +215,8 @@ def _print_deployment_info(customer_number):
             print('\t' + 'webservers:')
             for server in prod_env['webservers']:
                 print('\t\t%s:\t%s'%(server.replace('_ip', ''), prod_env.get('webservers').get(server)))
+    
+    print('')
 
 def _clear_screen():
     os.system('cls||clear')
