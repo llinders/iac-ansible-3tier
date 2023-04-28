@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "generic/ubuntu2004"
+    config.ssh.insert_key = false
+    config.vm.synced_folder('.', '/vagrant', disabled: true)
+  
+    config.vm.provider :vmware_esxi do |esxi|
+        esxi.esxi_hostname = '10.0.0.200'
+        esxi.esxi_username = 'root'
+        esxi.esxi_password = '5Vhj2WzmGE45cxp'
+        esxi.esxi_virtual_network = ['VM Network']
+        esxi.guest_memsize = '2048'
+        esxi.guest_numvcpus = '1'
+    end
+
+    # Apache webserver
+    config.vm.define "www1" do |www1|
+        www1.vm.hostname = "web1.iac.net"
+        www1.vm.define "web1.iac.net"
+        www1.vm.network :private_network, ip: "{{ webserver_ip }}"
+    
+        www1.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+            ansible.extra_vars = {
+              ansible_user: 'vagrant',
+              ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+            }
+        end
+    end
+
+    # Database
+    config.vm.define "db" do |db|
+        db.vm.hostname = "db.iac.net"
+        db.vm.define "db.iac.net"
+        db.vm.network :private_network, ip: "{{ database_ip }}"
+
+        db.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+            ansible.extra_vars = {
+                ansible_user: 'vagrant',
+                ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+            }
+        end
+    end
+end

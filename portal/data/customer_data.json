@@ -1,14 +1,14 @@
 [
     {
-        "customer_number": "1",
+        "customer_number": 1,
         "username": "Henk",
         "test_env_setup": {
-            "deployed": "true",
+            "deployed": true,
             "webserver_ip": "0.0.0.0",
             "database_ip": "0.0.0.0"
         },
         "prod_env_setup": {
-            "deployed": "true",
+            "deployed": true,
             "database_ip": "0.0.0.0",
             "loadbalancer_ip": "0.0.0.0",
             "webservers": {
@@ -18,13 +18,13 @@
         }
     },
     {
-        "customer_number": "2",
+        "customer_number": 2,
         "username": "Jaap",
         "test_env_setup": {
-            "deployed": "true"
+            "deployed": false
         },
         "prod_env_setup": {
-            "deployed": "true",
+            "deployed": false,
             "number_of_webservers": "4"
         }
     },
