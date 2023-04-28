@@ -4,7 +4,7 @@ http_host: "skylab"
 http_conf: "skylab.conf"
 http_port: "80"
 disable_default: true
-db_host: 192.168.1.54
+db_host: 10.0.0.13
 db_name: iac-db
 db_user: admin
 db_password: admin-password

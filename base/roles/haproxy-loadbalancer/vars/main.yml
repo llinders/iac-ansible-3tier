@@ -2,8 +2,8 @@
 frontend_port: 80
 backend_server_list:
   - name: web1
-    ip_address: 192.168.1.51
+    ip_address: 10.0.0.11
     port: 80
   - name: web2
-    ip_address: 192.168.1.52
+    ip_address: 10.0.0.12
     port: 80
