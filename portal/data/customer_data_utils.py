@@ -41,6 +41,18 @@ def check_if_exists(customer_number):
         if customer.get('customer_number') == customer_number: return True
     return False
 
+def environment_deployed(env, customer_number):
+    if env == 'test':
+        customers = _load_all_customer_data()
+        for customer in customers:
+            if customer.get('customer_number') == customer_number:
+                return customer['test_env_setup']['deployed']
+    elif env == 'prod':
+        customers = _load_all_customer_data()
+    else:
+        print('Not a valid environment, please enter `test` or `prod`')
+
+
 def _load_all_customer_data():
     ''' Load all customer data from customer inventory file '''
     with open(__CUSTOMER_INVENTORY_FILE__, 'r') as f:
