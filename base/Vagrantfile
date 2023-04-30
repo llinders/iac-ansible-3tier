@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "lb" do |lb|
         lb.vm.hostname = "lb.iac.net"
         lb.vm.define "lb.iac.net"
-        lb.vm.network :private_network, ip: "10.0.0.10"
+        lb.vm.network :private_network, ip: "10.0.0.5"
 
         lb.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "www1" do |www1|
         www1.vm.hostname = "web1.iac.net"
         www1.vm.define "web1.iac.net"
-        www1.vm.network :private_network, ip: "10.0.0.11"
+        www1.vm.network :private_network, ip: "10.0.0.6"
     
         www1.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "www2" do |www2|
         www2.vm.hostname = "web2.iac.net"
         www2.vm.define "web2.iac.net"
-        www2.vm.network :private_network, ip: "10.0.0.12"
+        www2.vm.network :private_network, ip: "10.0.0.7"
 
         www2.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "db" do |db|
         db.vm.hostname = "db.iac.net"
         db.vm.define "db.iac.net"
-        db.vm.network :private_network, ip: "10.0.0.13"
+        db.vm.network :private_network, ip: "10.0.0.8"
 
         db.vm.provision "ansible" do |ansible|
             ansible.playbook = "playbook.yml"
