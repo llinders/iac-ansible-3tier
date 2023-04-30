@@ -2,6 +2,8 @@
 # apply role 'common' to all hosts
 - hosts: all
   become: true
+  vars_files:
+    - vars/common.yml
 
   roles:
     - common
@@ -10,6 +12,8 @@
 # web servers
 - hosts: webservers
   become: true
+  vars_files:
+    - vars/apache-webserver.yml
 
   roles:
     - apache-webserver
@@ -18,6 +22,8 @@
 # load balancer
 - hosts: loadbalancer
   become: true
+  vars_files:
+    - vars/haproxy-loadbalancer.yml
     
   roles:
     - haproxy-loadbalancer
