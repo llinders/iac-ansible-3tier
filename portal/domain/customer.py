@@ -1,5 +1,5 @@
-from test_environment import TestEnvironment
-from prod_environment import ProductionEnvironment
+from domain.test_environment import TestEnvironment
+from domain.prod_environment import ProductionEnvironment
 
 
 class Customer:

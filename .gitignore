@@ -1,3 +1,6 @@
+### Customer deployments folder ###
+deployments/
+
 ### Ansible ###
 *.retry
 

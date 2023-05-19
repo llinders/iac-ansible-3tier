@@ -3,17 +3,17 @@
         "customer_number": 1,
         "username": "Henk",
         "test_env_setup": {
-            "deployed": true,
-            "webserver_ip": "0.0.0.0",
-            "database_ip": "0.0.0.0"
+            "deployed": false,
+            "webserver_ip": "",
+            "database_ip": ""
         },
         "prod_env_setup": {
-            "deployed": true,
-            "database_ip": "0.0.0.0",
-            "loadbalancer_ip": "0.0.0.0",
+            "deployed": false,
+            "database_ip": "",
+            "loadbalancer_ip": "",
             "webservers": {
-                "server1_ip": "0.0.0.0",
-                "server2_ip": "0.0.0.0"
+                "server1_ip": "",
+                "server2_ip": ""
             }
         }
     },

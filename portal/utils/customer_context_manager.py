@@ -6,9 +6,12 @@ Acts as a facade to simplify customer data management and persistent storage syn
 """
 
 from domain.customer import Customer
-import data.customer_data_utils as cdu
 from domain.prod_environment import ProductionEnvironment
 from domain.test_environment import TestEnvironment
+
+import utils.data.customer_data_utils as cdu
+import utils.data.ip_data_utils as idu
+import utils.deployment.environment_manager as em
 
 
 class CustomerContextManager:
@@ -53,6 +56,22 @@ class CustomerContextManager:
         
     def create_and_load_new_customer(self, username: str) -> None:
         self.load(cdu.write_new_customer(username))
+
+    def deploy_new_test_environment(self) -> None:
+        ip_list = idu.find_next_available_ips(2)
+        webserver_ip = ip_list[0]
+        database_ip = ip_list[1]
+        try:
+            em.deploy_new_test_environment(self.get_customer_number(), webserver_ip, database_ip)
+            self.customer.test_env.webserver_ip = webserver_ip
+            self.customer.test_env.database_ip = database_ip
+            idu.remove_ips(ip_list)
+        except Exception as ex:
+            print(ex)
+
+    def destroy_test_environment(self) -> None:
+        em.delete_test_environment(self.get_customer_number())
+        # add ips back to available ips
 
     def get_customer_number(self) -> int:
         return self.customer.customer_number

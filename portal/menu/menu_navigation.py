@@ -19,7 +19,7 @@ class Menu(Enum):
 
 
 def show_menu(menu: Menu, ccm: CustomerContextManager):
-    INVALID_INPUT_MSG = 'Please enter a valid input number'
+    INVALID_INPUT_MSG = "Please enter a valid input number"
 
     _clear_screen()
     match menu:
@@ -170,9 +170,13 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
                     em.deploy_new_test_environment(ccm.get_customer_number())
 
                 case 2:
-                    # destroy test if exists'
-                    em.delete_test_environment(ccm.get_customer_number())
-
+                    # destroy test if exists
+                    if (_confirmation_prompt()):
+                        em.delete_test_environment(ccm.get_customer_number())
+                    else:
+                        print('Destruction cancled')
+                        show_menu(Menu.MANAGE_TEST_ENV, ccm)
+                    
                 case 99:
                     show_menu(Menu.EXISTING_CUSTOMER, ccm)
 
@@ -201,7 +205,7 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
             raise ValueError('Not a valid menu')
 
 
-def _print_deployment_info(customer_number):
+def _print_deployment_info(customer_number) -> None:
     customer_info = cdu.get_customer(customer_number)
     test_env = customer_info['test_env_setup']
     prod_env = customer_info['prod_env_setup']
@@ -222,5 +226,12 @@ def _print_deployment_info(customer_number):
     
     print('')
 
-def _clear_screen():
+def _confirmation_prompt() -> bool:
+    answer = input("Please type 'y' or 'yes' to confirm, or 'no' to cancel")
+    if answer.lower() in ["y","yes"]:
+        return True
+    else:
+        return False
+
+def _clear_screen() -> None:
     os.system('cls||clear')
