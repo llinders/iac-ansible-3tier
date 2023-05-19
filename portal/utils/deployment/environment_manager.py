@@ -12,30 +12,23 @@ def deploy_new_test_environment(customer_number: int, webserver_ip: str, databas
     if not os.path.exists(customer_dir):
         os.makedirs(customer_dir)
 
-        # Copy Ansible role dependencies and role var files
-        shutil.copytree('./base/roles', f'{customer_dir}/roles', dirs_exist_ok=True) 
-        shutil.copytree('./base/vars', f'{customer_dir}/vars', dirs_exist_ok=True)
+    # Copy Ansible role dependencies and role var files
+    shutil.copytree('./base/roles', f'{customer_dir}/roles', dirs_exist_ok=True) 
+    shutil.copytree('./base/vars', f'{customer_dir}/vars', dirs_exist_ok=True)
 
-        # Copy Ansible config file and other Ansible files
-        shutil.copy('./base/ansible.cfg', f'{customer_dir}/ansible.cfg')
-        shutil.copy('./base/playbook-common.yml', f'{customer_dir}/playbook-common.yml')
-        shutil.copy('./base/playbook-specific.yml', f'{customer_dir}/playbook-specific.yml')
+    # Copy Ansible config file and other Ansible files
+    shutil.copy('./base/ansible.cfg', f'{customer_dir}/ansible.cfg')
+    shutil.copy('./base/playbook-common.yml', f'{customer_dir}/playbook-common.yml')
+    shutil.copy('./base/playbook-specific.yml', f'{customer_dir}/playbook-specific.yml')
 
-        # Generate and write inventory.ini file
-        with open(f'{customer_dir}/inventory.ini', 'w') as out_file:
-            out_file.write(f'[webservers]\n{webserver_ip}\n[database]\n{database_ip}')
+    # Generate and write inventory.ini file
+    with open(f'{customer_dir}/inventory.ini', 'w') as out_file:
+        out_file.write(f'[webservers]\n{webserver_ip}\n[database]\n{database_ip}')
 
-        # Modify template Vagrantfile.j2 and write to customer deployment folder
-        #shutil.copy('./templates/Vagrantfile_testenv.j2', f'{customer_dir}/Vagrantfile.j2')
-        with open(f'{customer_dir}/Vagrantfile', 'w') as out_file:
-            out_file.write(modify_vagrantfile_testenv(webserver_ip, database_ip))
-
-        
-        
-        # Copy Ansible var files
-
-
-        return
+    # Modify template Vagrantfile.j2 and write to customer deployment folder
+    #shutil.copy('./templates/Vagrantfile_testenv.j2', f'{customer_dir}/Vagrantfile.j2')
+    with open(f'{customer_dir}/Vagrantfile', 'w') as out_file:
+        out_file.write(modify_vagrantfile_testenv(webserver_ip, database_ip))
     
 
 def deploy_new_prod_environment(customer_number: int) -> None:
