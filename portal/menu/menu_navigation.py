@@ -2,8 +2,10 @@ import os
 from enum import Enum
 from art import tprint
 
-import data.customer_data_utils as cdu
-import deployment.environment_manager as em
+import utils.data.customer_data_utils as cdu
+import utils.deployment.environment_manager as em
+from utils.customer_context_manager import CustomerContextManager
+
 
 class Menu(Enum):
     '''Enum class that contains all menu options for the CLI'''
@@ -16,7 +18,7 @@ class Menu(Enum):
     MANAGE_PROD_ENV = 7
 
 
-def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
+def show_menu(menu: Menu, ccm: CustomerContextManager):
     INVALID_INPUT_MSG = 'Please enter a valid input number'
 
     _clear_screen()
@@ -32,17 +34,17 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                         Choose:                             ########")
             print("########                                                             ########")
             print("########           1) New customer  |  2) Existing customer          ########")
-            print("########      3) Exit                                                ########")
+            print("########       99) Exit                                              ########")
             print("########                                                             ########")
             print("#############################################################################")
             chosen_element = input("Choose a number between 1 and 3: ")
 
             match chosen_element:
                 case 1:
-                    show_menu(Menu.NEW_CUSTOMER)
+                    show_menu(Menu.NEW_CUSTOMER, ccm)
                 case 2:
-                    show_menu(Menu.LOGIN)
-                case 3:
+                    show_menu(Menu.LOGIN, ccm)
+                case 99:
                     print('exit')
                 case _:
                     print(INVALID_INPUT_MSG)
@@ -51,7 +53,7 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             tprint('Welcome!')
             username = input('Please enter a username: ')
             
-            cdu.write_new_customer(username)
+            ccm.create_and_load_new_customer(username)
 
             print("#############################################################################")
             print("########                                                             ########")
@@ -65,29 +67,30 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                         Choose:                             ########")
             print("########                                                             ########")
             print("########      1) Test environment  |  2) Production environment      ########")
-            print("########      3) Exit                                                ########")
+            print("########      99) Exit                                               ########")
             print("########                                                             ########")
             print("#############################################################################")
             chosen_element = input("Choose a number between 1 and 3: ")
 
             match chosen_element:
                 case 1:
-                    em.deploy_new_test_environment()
+                    em.deploy_new_test_environment(ccm.get_customer_number())
                 case 2: 
-                    em.deploy_new_prod_environment()
-                case 3:
+                    em.deploy_new_prod_environment(ccm.get_customer_number())
+                case 99:
                     print('exit')
                 case _:
                     print(INVALID_INPUT_MSG)
         
         case Menu.LOGIN:
             tprint('Welcome back!')
-            customer_number = input('Please enter your customer number to login: ')
+            customer_number = int(input('Please enter your customer number to login: '))
 
-            if (cdu.check_if_exists(customer_number)):
-                show_menu(Menu.EXISTING_CUSTOMER, username, customer_number)
-            else:
-                show_menu(Menu.LOGIN_FAILED)
+            try:
+                ccm = CustomerContextManager(customer_number)
+                show_menu(Menu.EXISTING_CUSTOMER, ccm)
+            except:
+                show_menu(Menu.LOGIN_FAILED, ccm)              
         
         case Menu.LOGIN_FAILED:
             print("#############################################################################")
@@ -108,9 +111,9 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
 
             match chosen_element:
                 case 1:
-                    show_menu(Menu.LOGIN)
+                    show_menu(Menu.LOGIN, ccm)
                 case 2:
-                    show_menu(Menu.STARTUP_MENU)
+                    show_menu(Menu.STARTUP_MENU, ccm)
                 case _:
                     print(INVALID_INPUT_MSG)
 
@@ -119,7 +122,7 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                                                             ########")
             print("########                   Self Service Portal                       ########")
             print("######## ----------------------------------------------------------- ########")
-            print("########                          Hi, %s!                       ########"%username)
+            print("########                          Hi, %s!                       ########"%ccm.get_username())
             print("########     Choose to manage your test or production environment    ########")
             print("######## ----------------------------------------------------------- ########")
             print("########                                                             ########")
@@ -127,19 +130,19 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                                                             ########")
             print("########             1) Manage test environment                      ########")
             print("########             2) Manage production environment                ########")
-            print("########             3) Exit                                         ########")
+            print("########             99) Exit                                        ########")
             print("########                                                             ########")
             print("#############################################################################")
-            _print_deployment_info(customer_number)
+            _print_deployment_info(ccm.get_customer_number())
 
             chosen_element = input("Choose a number between 1 and 3: ")
 
             match chosen_element:
                 case 1:
-                    show_menu(Menu.MANAGE_TEST_ENV, username, customer_number)
+                    show_menu(Menu.MANAGE_TEST_ENV, ccm)
                 case 2:
-                    show_menu(Menu.MANAGE_PROD_ENV, username, customer_number)
-                case 3:
+                    show_menu(Menu.MANAGE_PROD_ENV, ccm)
+                case 99:
                     print('exit')
         
         case Menu.MANAGE_TEST_ENV:
@@ -153,9 +156,9 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                                                             ########")
             print("########                         Choose:                             ########")
             print("########                                                             ########")
-            print("########             1) Deploy test environment                      ########")
-            print("########             2) Destroy test environment                     ########")
-            print("########             3) Return to main menu                          ########")
+            print("########             1)  Deploy test environment                     ########")
+            print("########             2)  Destroy test environment                    ########")
+            print("########             99) Return to main menu                         ########")
             print("########                                                             ########")
             print("#############################################################################")
 
@@ -164,14 +167,14 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             match chosen_element:
                 case 1:
                     # deploy test if not exists
-                    em.deploy_new_test_environment()
+                    em.deploy_new_test_environment(ccm.get_customer_number())
 
                 case 2:
                     # destroy test if exists'
-                    em.delete_test_environment()
+                    em.delete_test_environment(ccm.get_customer_number())
 
-                case 3:
-                    show_menu(Menu.EXISTING_CUSTOMER, username, customer_number)
+                case 99:
+                    show_menu(Menu.EXISTING_CUSTOMER, ccm)
 
         case Menu.MANAGE_PROD_ENV:
             # 1. deploy 2. Scale up/down 3. remove 4. go back 
@@ -184,15 +187,16 @@ def show_menu(menu: Menu, username: str = 'user', customer_number: int = None):
             print("########                                                             ########")
             print("########                         Choose:                             ########")
             print("########                                                             ########")
-            print("########      1) Deploy prod environment                             ########")
-            print("########      2) Upscale or downscale existing prod environment      ########")
-            print("########      3) Destroy prod environment                            ########")
-            print("########      4) Return to main menu                                 ########")
+            print("########      1)  Deploy prod environment                            ########")
+            print("########      2)  Upscale or downscale existing prod environment     ########")
+            print("########      3)  Destroy prod environment                           ########")
+            print("########      99) Return to main menu                                ########")
             print("########                                                             ########")
             print("#############################################################################")
 
             chosen_element = input("Choose a number between 1 and 4: ")
 
+ 
         case _:
             raise ValueError('Not a valid menu')
 
