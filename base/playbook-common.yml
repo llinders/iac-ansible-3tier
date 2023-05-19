@@ -1,0 +1,10 @@
+---
+# apply role 'common' to all hosts
+- hosts: all
+  become: true
+  vars_files:
+    - vars/common.yml
+
+  roles:
+    - common
+  tags: [ common ]
