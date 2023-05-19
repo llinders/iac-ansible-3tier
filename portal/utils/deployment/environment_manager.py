@@ -12,8 +12,9 @@ def deploy_new_test_environment(customer_number: int, webserver_ip: str, databas
     if not os.path.exists(customer_dir):
         os.makedirs(customer_dir)
 
-        # Copy Ansible role dependencies
+        # Copy Ansible role dependencies and role var files
         shutil.copytree('./base/roles', f'{customer_dir}/roles', dirs_exist_ok=True) 
+        shutil.copytree('./base/vars', f'{customer_dir}/vars', dirs_exist_ok=True)
 
         # Copy Ansible config file and other Ansible files
         shutil.copy('./base/ansible.cfg', f'{customer_dir}/ansible.cfg')
