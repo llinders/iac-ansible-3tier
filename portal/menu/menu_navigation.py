@@ -2,8 +2,7 @@ import os
 from enum import Enum
 from art import tprint
 
-import utils.data.customer_data_utils as cdu
-import portal.utils.deployment.deployment_file_copier as dfc
+import portal.utils.deployment.deployment_files_manager as dfm
 from utils.customer_context_manager import CustomerContextManager
 
 
@@ -74,9 +73,9 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
 
             match chosen_element:
                 case 1:
-                    dfc.create_test_env_files(ccm.get_customer_number())
+                    ccm.deploy_new_test_environment()
                 case 2: 
-                    dfc.create_prod_env_files(ccm.get_customer_number())
+                    dfm.create_prod_env_files(ccm.get_customer_number())
                 case 99:
                     print('exit')
                 case _:
@@ -133,7 +132,7 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
             print("########             99) Exit                                        ########")
             print("########                                                             ########")
             print("#############################################################################")
-            _print_deployment_info(ccm.get_customer_number())
+            ccm.print_deployment_info()
 
             chosen_element = input("Choose a number between 1 and 3: ")
 
@@ -167,12 +166,12 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
             match chosen_element:
                 case 1:
                     # deploy test if not exists
-                    dfc.create_test_env_files(ccm.get_customer_number())
+                    dfm.create_test_env_files(ccm.get_customer_number())
 
                 case 2:
                     # destroy test if exists
                     if (_confirmation_prompt()):
-                        dfc.delete_test_environment(ccm.get_customer_number())
+                        dfm.delete_test_environment(ccm.get_customer_number())
                     else:
                         print('Destruction cancled')
                         show_menu(Menu.MANAGE_TEST_ENV, ccm)
@@ -180,8 +179,7 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
                 case 99:
                     show_menu(Menu.EXISTING_CUSTOMER, ccm)
 
-        case Menu.MANAGE_PROD_ENV:
-            # 1. deploy 2. Scale up/down 3. remove 4. go back 
+        case Menu.MANAGE_PROD_ENV: 
             print("#############################################################################")
             print("########                                                             ########")
             print("########                   Self Service Portal                       ########")
@@ -205,27 +203,6 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
             raise ValueError('Not a valid menu')
 
 
-def _print_deployment_info(customer_number) -> None:
-    customer_info = cdu.get_customer(customer_number)
-    test_env = customer_info['test_env_setup']
-    prod_env = customer_info['prod_env_setup']
-    
-    print('                 ## Information about current deployment ##')
-    print('Test environment:')
-    for item in test_env:
-        print('\t%s:\t\t%s'%(item.replace('_ip', ''), test_env.get(item)))
-    
-    print('Production environment:')
-    for item in prod_env:
-        if (item != 'webservers'):
-            print('\t%s:\t\t%s'%(item.replace('_ip', ''), prod_env.get(item)))
-        else:
-            print('\t' + 'webservers:')
-            for server in prod_env['webservers']:
-                print('\t\t%s:\t%s'%(server.replace('_ip', ''), prod_env.get('webservers').get(server)))
-    
-    print('')
-
 def _confirmation_prompt() -> bool:
     answer = input("Please type 'y' or 'yes' to confirm, or 'no' to cancel")
     if answer.lower() in ["y","yes"]:
@@ -235,3 +212,4 @@ def _confirmation_prompt() -> bool:
 
 def _clear_screen() -> None:
     os.system('cls||clear')
+

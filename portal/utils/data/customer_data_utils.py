@@ -37,7 +37,7 @@ def write_new_customer(username: str) -> int:
 
 def update_customer(customer_number: int, customer_data: dict) -> None:
     """
-    Update customer by providing customer data in dict format
+    Update customer taking in a customer dict and replacing the old customer data
     """
     customers = _load_all_customer_data()
     print(customers)
