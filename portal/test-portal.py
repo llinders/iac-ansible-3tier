@@ -36,11 +36,19 @@ from utils.customer_context_manager import CustomerContextManager
 
 ## j2_template_modifier ##
 # test env
-print(modify_vagrantfile_testenv('0.0.0.0', '1.1.1.1'))
+# print(modify_vagrantfile_testenv('0.0.0.0', '1.1.1.1'))
 
 ## Test ip_data_utils.py
-idu.add_ips(['0.0.0.0', '0.0.0.1'])
+# idu.add_ips(['0.0.0.0', '0.0.0.1'])
 
 ## Test file copying and j2 template modify
-ccm = CustomerContextManager(1)
+# ccm = CustomerContextManager(1)
 #ccm.deploy_new_test_environment()
+
+## Test object to dict transformation
+ccm = CustomerContextManager(1)
+print(dict(ccm.customer))
+
+## Test update customer method
+ccm.customer.username = ccm.customer.username + '1'
+ccm._persist_customer_data()

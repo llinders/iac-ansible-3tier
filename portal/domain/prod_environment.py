@@ -9,3 +9,9 @@ class ProductionEnvironment:
         self.loadbalancer_ip = loadbalancer_ip
         self.database_ip = database_ip
         self.webserver_ips = webserver_ips
+    
+    def __iter__(self):
+        yield 'deployed', self.deployed
+        yield 'loadbalancer_ip', self.loadbalancer_ip
+        yield 'database_ip', self.database_ip
+        yield 'webservers', self.webserver_ips 

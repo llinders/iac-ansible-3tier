@@ -66,12 +66,14 @@ class CustomerContextManager:
             self.customer.test_env.webserver_ip = webserver_ip
             self.customer.test_env.database_ip = database_ip
             idu.remove_ips(ip_list)
+
         except Exception as ex:
             print(ex)
 
     def destroy_test_environment(self) -> None:
         em.delete_test_environment(self.get_customer_number())
-        # add ips back to available ips
+        idu.add_ips([self.customer.test_env.webserver_ip, self.customer.test_env.database_ip])
+
 
     def get_customer_number(self) -> int:
         return self.customer.customer_number
@@ -79,5 +81,7 @@ class CustomerContextManager:
     def get_username(self) -> str:
         return self.customer.username
 
-        
+    
+    def _persist_customer_data(self) -> None:
+        cdu.update_customer(self.customer.customer_number, dict(self.customer))
 

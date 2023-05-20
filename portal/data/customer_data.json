@@ -9,8 +9,8 @@
         },
         "prod_env_setup": {
             "deployed": false,
-            "database_ip": "",
             "loadbalancer_ip": "",
+            "database_ip": "",
             "webservers": {
                 "server1_ip": "",
                 "server2_ip": ""

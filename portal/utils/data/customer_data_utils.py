@@ -35,11 +35,24 @@ def write_new_customer(username: str) -> int:
 
     return new_customer_number
 
-def update_customer(customer_number: int):
-    return
+def update_customer(customer_number: int, customer_data: dict) -> None:
+    """
+    Update customer by providing customer data in dict format
+    """
+    customers = _load_all_customer_data()
+    print(customers)
+    for index, customer in enumerate(customers):
+        if (customer['customer_number'] == customer_number):
+            customers[index] = customer_data
+    
+    with open(__CUSTOMER_INVENTORY_FILE__, 'w') as f:
+        json.dump(customers, f, indent=4)
+
 
 def check_if_exists(customer_number: int):
-    '''Checks if a customer exists with `customer_number` and returns True if it does'''
+    """
+    Checks if a customer exists with `customer_number` and returns True if it does
+    """
     customers = _load_all_customer_data()
     for customer in customers:
         if customer.get('customer_number') == customer_number: return True
