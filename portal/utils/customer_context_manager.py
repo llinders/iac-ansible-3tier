@@ -11,7 +11,7 @@ from domain.test_environment import TestEnvironment
 
 import utils.data.customer_data_utils as cdu
 import utils.data.ip_data_utils as idu
-import utils.deployment.environment_manager as em
+import portal.utils.deployment.deployment_file_copier as dfc
 
 
 class CustomerContextManager:
@@ -62,16 +62,16 @@ class CustomerContextManager:
         webserver_ip = ip_list[0]
         database_ip = ip_list[1]
         try:
-            em.deploy_new_test_environment(self.get_customer_number(), webserver_ip, database_ip)
+            dfc.create_test_env_files(self.get_customer_number(), webserver_ip, database_ip)
             self.customer.test_env.webserver_ip = webserver_ip
             self.customer.test_env.database_ip = database_ip
             idu.remove_ips(ip_list)
-
+            self._persist_customer_data()
         except Exception as ex:
             print(ex)
 
     def destroy_test_environment(self) -> None:
-        em.delete_test_environment(self.get_customer_number())
+        dfc.delete_test_environment(self.get_customer_number())
         idu.add_ips([self.customer.test_env.webserver_ip, self.customer.test_env.database_ip])
 
 

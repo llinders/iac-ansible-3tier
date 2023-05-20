@@ -4,7 +4,7 @@ from utils.data.customer_data_utils import environment_deployed
 from utils.deployment.j2_template_modifier import modify_vagrantfile_testenv
 
 
-def deploy_new_test_environment(customer_number: int, webserver_ip: str, database_ip: str) -> None:
+def create_test_env_files(customer_number: int, webserver_ip: str, database_ip: str) -> None:
     if environment_deployed(env='test', customer_number=customer_number):
         raise Exception('Test environment is already deployed, cannot deploy multiple test environments')
     
@@ -31,7 +31,7 @@ def deploy_new_test_environment(customer_number: int, webserver_ip: str, databas
         out_file.write(modify_vagrantfile_testenv(webserver_ip, database_ip))
     
 
-def deploy_new_prod_environment(customer_number: int) -> None:
+def create_prod_env_files(customer_number: int) -> None:
     # check if environment already exists
     return
 

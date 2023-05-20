@@ -3,7 +3,7 @@ from enum import Enum
 from art import tprint
 
 import utils.data.customer_data_utils as cdu
-import utils.deployment.environment_manager as em
+import portal.utils.deployment.deployment_file_copier as dfc
 from utils.customer_context_manager import CustomerContextManager
 
 
@@ -74,9 +74,9 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
 
             match chosen_element:
                 case 1:
-                    em.deploy_new_test_environment(ccm.get_customer_number())
+                    dfc.create_test_env_files(ccm.get_customer_number())
                 case 2: 
-                    em.deploy_new_prod_environment(ccm.get_customer_number())
+                    dfc.create_prod_env_files(ccm.get_customer_number())
                 case 99:
                     print('exit')
                 case _:
@@ -167,12 +167,12 @@ def show_menu(menu: Menu, ccm: CustomerContextManager):
             match chosen_element:
                 case 1:
                     # deploy test if not exists
-                    em.deploy_new_test_environment(ccm.get_customer_number())
+                    dfc.create_test_env_files(ccm.get_customer_number())
 
                 case 2:
                     # destroy test if exists
                     if (_confirmation_prompt()):
-                        em.delete_test_environment(ccm.get_customer_number())
+                        dfc.delete_test_environment(ccm.get_customer_number())
                     else:
                         print('Destruction cancled')
                         show_menu(Menu.MANAGE_TEST_ENV, ccm)
