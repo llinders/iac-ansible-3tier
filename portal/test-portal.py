@@ -47,8 +47,8 @@ from utils.customer_context_manager import CustomerContextManager
 
 ## Test object to dict transformation
 ccm = CustomerContextManager(1)
-print(dict(ccm.customer))
+print(dict(ccm.__customer))
 
 ## Test update customer method
-ccm.customer.username = ccm.customer.username + '1'
-ccm._persist_customer_data()
+ccm.__customer.username = ccm.__customer.username + '1'
+ccm.__persist_customer_data()

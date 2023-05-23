@@ -4,10 +4,7 @@ from utils.data.customer_data_utils import environment_deployed
 from utils.deployment.j2_template_modifier import modify_vagrantfile_testenv
 
 
-def create_test_env_files(customer_number: int, webserver_ip: str, database_ip: str) -> None:
-    if environment_deployed(env='test', customer_number=customer_number):
-        raise Exception('Test environment is already deployed, cannot deploy multiple test environments')
-    
+def prepare_test_env_files(customer_number: int, webserver_ip: str, database_ip: str) -> None:
     customer_dir = f'./deployments/customer_{customer_number}/test'
     if not os.path.exists(customer_dir):
         os.makedirs(customer_dir)
@@ -31,15 +28,15 @@ def create_test_env_files(customer_number: int, webserver_ip: str, database_ip: 
         out_file.write(modify_vagrantfile_testenv(webserver_ip, database_ip))
     
 
-def create_prod_env_files(customer_number: int) -> None:
-    # check if environment already exists
+def prepare_prod_env_files(customer_number: int, webserver_ips: list[str], loadbalancer_ip: str, database_ip: str) -> None:
+    
     return
 
 def modify_prod_environment(customer_number: int) -> None:
-    return
+    raise NotImplementedError
 
 def delete_test_environment(customer_number: int) -> None:
-    return
+    raise NotImplementedError
 
 def delete_prod_enviroment(customer_number: int) -> None:
-    return
+    raise NotImplementedError
