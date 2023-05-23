@@ -15,7 +15,7 @@ import utils.data.customer_data_utils as cdu
 
 import utils.data.customer_data_utils as cdu
 import utils.data.ip_data_utils as idu
-import portal.utils.deployment.deployment_file_handler as dfh
+import utils.deployment.deployment_file_handler as dfh
 
 
 class CustomerContextManager:
@@ -116,13 +116,13 @@ class CustomerContextManager:
             loadbalancer_ip, database_ip = ip_list[:2]
             webserver_ips = ip_list[2:]
             
-            dfh.prepare_prod_env_files(self.get_customer_number(), webserver_ip, database_ip)
+            dfh.prepare_prod_env_files(self.get_customer_number(), webserver_ips, database_ip, loadbalancer_ip)
 
             # Update domain model and write to persistent storage
-            self.__customer.test_env.files_prepared = True
-            self.__customer.test_env.webserver_ip = webserver_ip
-            self.__customer.test_env.database_ip = database_ip
-            idu.remove_ips([webserver_ip, database_ip])
+            self.__customer.prod_env.files_prepared = True
+            self.__customer.prod_env.webserver_ips = webserver_ips
+            self.__customer.prod_env.database_ip = database_ip
+            idu.remove_ips(ip_list)
 
             self.__persist_customer_data()
         else:

@@ -19,55 +19,40 @@ Vagrant.configure("2") do |config|
     config.vm.define "lb" do |lb|
         lb.vm.hostname = "lb.iac.net"
         lb.vm.define "lb.iac.net"
-        lb.vm.network :private_network, ip: "10.0.0.10"
+        lb.vm.network :private_network, ip: "{{ loadbalancer_ip }}"
 
         lb.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
+            ansible.playbook = "playbook-common.yml"
             ansible.extra_vars = {
                 ansible_user: 'vagrant',
                 ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
             }
         end
     end
-
-    # Apache webserver 1
-    config.vm.define "www1" do |www1|
-        www1.vm.hostname = "web1.iac.net"
-        www1.vm.define "web1.iac.net"
-        www1.vm.network :private_network, ip: "10.0.0.11"
+{% for webserver in webservers %}
+    # Apache webserver {{ loop.index }}
+    config.vm.define "www{{ loop.index }}" do |web|
+        web.vm.hostname = "web{{ loop.index }}.iac.net"
+        web.vm.define "web{{loop.index }}.iac.net"
+        web.vm.network :private_network, ip: "{{ webserver }}"
     
-        www1.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
+        web.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook-common.yml"
             ansible.extra_vars = {
-              ansible_user: 'vagrant',
-              ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+            ansible_user: 'vagrant',
+            ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
             }
         end
     end
-
-    # Apache webserver 2
-    config.vm.define "www2" do |www2|
-        www2.vm.hostname = "web2.iac.net"
-        www2.vm.define "web2.iac.net"
-        www2.vm.network :private_network, ip: "10.0.0.12"
-
-        www2.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-            ansible.extra_vars = {
-              ansible_user: 'vagrant',
-              ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
-            }
-        end
-    end
-
+{% endfor %}
     # Database
     config.vm.define "db" do |db|
         db.vm.hostname = "db.iac.net"
         db.vm.define "db.iac.net"
-        db.vm.network :private_network, ip: "10.0.0.13"
+        db.vm.network :private_network, ip: "{{ database_ip }}"
 
         db.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
+            ansible.playbook = "playbook-common.yml"
             ansible.extra_vars = {
                 ansible_user: 'vagrant',
                 ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"

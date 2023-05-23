@@ -1,7 +1,7 @@
 # from menu.menu_navigation import Menu, show_menu
 # import utils.data.customer_data_utils as cdu
 # import utils.data.ip_data_utils as idu
-# from utils.deployment.j2_template_modifier import modify_vagrantfile_testenv
+from utils.deployment.j2_template_modifier import modify_vagrantfile_test_env, modify_vagrantfile_prod_env
 from utils.customer_context_manager import CustomerContextManager
 
 ## Loading all customer data ##
@@ -36,19 +36,22 @@ from utils.customer_context_manager import CustomerContextManager
 
 ## j2_template_modifier ##
 # test env
-# print(modify_vagrantfile_testenv('0.0.0.0', '1.1.1.1'))
+# print(modify_vagrantfile_test_env('0.0.0.0', '1.1.1.1'))
+# test prod
+print(modify_vagrantfile_prod_env(['0.0.0.1', '0.0.0.2'], '0.0.0.3', '0.0.0.4'))
 
 ## Test ip_data_utils.py
 # idu.add_ips(['0.0.0.0', '0.0.0.1'])
 
 ## Test file copying and j2 template modify
-# ccm = CustomerContextManager(1)
+ccm = CustomerContextManager(1)
 #ccm.deploy_new_test_environment()
+ccm.deploy_prod_environment(3)
 
 ## Test object to dict transformation
-ccm = CustomerContextManager(1)
-print(dict(ccm.__customer))
+# ccm = CustomerContextManager(1)
+# print(dict(ccm.__customer))
 
 ## Test update customer method
-ccm.__customer.username = ccm.__customer.username + '1'
-ccm.__persist_customer_data()
+# ccm.__customer.username = ccm.__customer.username + '1'
+# ccm.__persist_customer_data()

@@ -3,18 +3,21 @@
         "customer_number": 1,
         "username": "Henk111",
         "test_env_setup": {
+            "files_prepared": false,
             "deployed": false,
             "webserver_ip": "",
             "database_ip": ""
         },
         "prod_env_setup": {
+            "files_prepared": true,
             "deployed": false,
             "loadbalancer_ip": "",
-            "database_ip": "",
-            "webservers": {
-                "server1_ip": "",
-                "server2_ip": ""
-            }
+            "database_ip": "0.0.0.1",
+            "webservers": [
+                "10.0.0.10",
+                "10.0.0.11",
+                "10.0.0.12"
+            ]
         }
     },
     {
