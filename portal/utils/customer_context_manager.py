@@ -10,11 +10,11 @@ persistent data of deployed environments.
 from domain.customer import Customer
 from domain.prod_environment import ProductionEnvironment
 from domain.test_environment import TestEnvironment
-import portal.utils.data.customer_data_utils as cdu
+import utils.data.customer_data_utils as cdu
 
 import utils.data.customer_data_utils as cdu
 import utils.data.ip_data_utils as idu
-import portal.utils.deployment.deployment_files_manager as dfm
+import utils.deployment.deployment_files_manager as dfm
 
 
 class CustomerContextManager:

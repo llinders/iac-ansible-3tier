@@ -1,7 +1,7 @@
-from menu.menu_navigation import Menu, show_menu
-import utils.data.customer_data_utils as cdu
-import utils.data.ip_data_utils as idu
-from utils.deployment.j2_template_modifier import modify_vagrantfile_testenv
+# from menu.menu_navigation import Menu, show_menu
+# import utils.data.customer_data_utils as cdu
+# import utils.data.ip_data_utils as idu
+# from utils.deployment.j2_template_modifier import modify_vagrantfile_testenv
 from utils.customer_context_manager import CustomerContextManager
 
 ## Loading all customer data ##
