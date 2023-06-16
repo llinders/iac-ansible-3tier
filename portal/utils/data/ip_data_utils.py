@@ -30,5 +30,5 @@ def add_ips(ip_list: list[str]) -> None:
     ip_data.sort(key=len) # sort first alphabetically and then by length to get the required result
     
     with open(__AVAILABLE_IP_ADDRESSES_FILE__, 'w') as f:
-        json.dump(ip_data, f)
+        json.dump(ip_data, f, indent=4)
 

@@ -9,7 +9,7 @@ def get_customer(customer_number: int) -> dict:
     for customer in customers:
         if (customer['customer_number'] == customer_number):
             return customer
-        raise Exception('Customer with customer number %d could not be found'%customer_number)
+        raise Exception(f'Customer with customer number {customer_number} could not be found')
     return {}
 
 def write_new_customer(username: str) -> int:
@@ -40,7 +40,6 @@ def update_customer(customer_number: int, customer_data: dict) -> None:
     Update customer taking in a customer dict and replacing the old customer data
     """
     customers = _load_all_customer_data()
-    print(customers)
     for index, customer in enumerate(customers):
         if (customer['customer_number'] == customer_number):
             customers[index] = customer_data

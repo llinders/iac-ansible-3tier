@@ -11,6 +11,7 @@ import vagrant
 from domain.customer import Customer
 from domain.prod_environment import ProductionEnvironment
 from domain.test_environment import TestEnvironment
+from .deployment.customer_env_dir_builder import build_customer_env_dir
 import utils.data.customer_data_utils as cdu
 
 import utils.data.customer_data_utils as cdu
@@ -93,8 +94,7 @@ class CustomerContextManager:
         if (deploy_to_vagrant.lower() == 'y'):
             raise NotImplementedError
 
-
-    def destroy_test_environment(self) -> None:
+    def delete_test_environment(self) -> None:
         dfh.delete_test_environment(self.get_customer_number())
         idu.add_ips([self.__customer.test_env.webserver_ip, self.__customer.test_env.database_ip])
 
@@ -104,12 +104,12 @@ class CustomerContextManager:
         copy files and update customer data.
         When Ansible and Vagrant files are prepared a prompt is given which allows the user to chose to deploy to vagrant.
         """
-        if number_of_webservers < 1:
-            raise ValueError("Number of webservers must be a minimum of 1")
-        if self.__customer.test_env.deployed:
-            raise Exception("Test environment is already deployed, cannot deploy multiple test environments")
+        if 1 < number_of_webservers <= 5:
+            raise ValueError("Number of webservers must be a minimum of 1 and maximum of 5")
+        if self.__customer.prod_env.deployed:
+            raise Exception("Production environment is already deployed, cannot deploy multiple production environments")
         
-        if not (self.__customer.test_env.files_prepared):
+        if not (self.__customer.prod_env.files_prepared):
             print('Preparing environment files...')
 
             ip_list = idu.find_next_available_ips(2 + number_of_webservers)
@@ -117,6 +117,7 @@ class CustomerContextManager:
             webserver_ips = ip_list[2:]
             
             dfh.prepare_prod_env_files(self.get_customer_number(), webserver_ips, database_ip, loadbalancer_ip)
+            print('Environment directory and files succesfully created')
 
             # Update domain model and write to persistent storage
             self.__customer.prod_env.files_prepared = True
@@ -124,19 +125,80 @@ class CustomerContextManager:
             self.__customer.prod_env.database_ip = database_ip
             idu.remove_ips(ip_list)
 
+            print("Saving deployment information... ", end="")
             self.__persist_customer_data()
+            print("succes!")
         else:
             print('Environment files are already prepared')
 
-        deploy_to_vagrant = input('Do you want to deploy to vagrant right now? (Y/N): ')
-        if (deploy_to_vagrant.lower() == 'y'):
-            raise NotImplementedError
+        deploy_with_vagrant = input('Do you want to deploy with vagrant right now? (Y/N): ')
+        if (deploy_with_vagrant.lower() == 'y'):
+            env_dir = build_customer_env_dir(self.get_customer_number(), "prod")
+            v = vagrant.Vagrant(root=env_dir, quiet_stderr=False, quiet_stdout=False)
+            v.up()
+            self.__customer.prod_env.deployed = True
+            self.__persist_customer_data()
 
-    def get_customer_number(self) -> int:
-        return self.__customer.customer_number
+    def modify_prod_environment(self, number_of_webservers: int):
+        """
+        Modifies Vagrantfile while keeping all server ips the same.
+        For webservers the difference in the specified number is either added or removed from the Vagrantfile.
+        """
+        if 1 < number_of_webservers <= 5:
+            raise ValueError("Number of webservers must be a minimum of 1 and maximum of 5")
+        
+        if number_of_webservers == len(self.__customer.prod_env.webserver_ips):
+            print("Number of servers the same amount as servers deployed. No changes made")
+            return
+        
+        # Add or remove difference in webservers
+        webserver_ips = self.__customer.prod_env.webserver_ips
+        difference = abs(len(webserver_ips) - number_of_webservers)
+        if len(webserver_ips) < number_of_webservers:
+            additional_ips = idu.find_next_available_ips(difference)
+            webserver_ips.extend(additional_ips) # Assign ips to newly added servers
+        elif len(webserver_ips) > number_of_webservers:
+            removed_server_ips = self.__customer.prod_env.webserver_ips[-difference:]
+            idu.add_ips(removed_server_ips) # Add back removed server ips to available ip list
+
+        database_ip = self.__customer.prod_env.database_ip
+        loadbalancer_ip = self.__customer.prod_env.loadbalancer_ip
+        dfh.prepare_prod_env_files(self.get_customer_number(), webserver_ips, database_ip, loadbalancer_ip)
+
+        # Update domain model and write to persistent storage
+        self.__customer.prod_env.webserver_ips = webserver_ips
+
+        print("Saving deployment information... ", end="")
+        self.__persist_customer_data()
+        print("succes!")
+
+        deploy_with_vagrant = input('Do you want to deploy the updated environment with vagrant right now? (Y/N): ')
+        if (deploy_with_vagrant.lower() == 'y'):
+            env_dir = build_customer_env_dir(self.get_customer_number(), "prod")
+            v = vagrant.Vagrant(root=env_dir, quiet_stderr=False, quiet_stdout=False)
+            if len(webserver_ips) < number_of_webservers:
+                v.up()
+            elif len(webserver_ips) > number_of_webservers:
+                for server_number in range(number_of_webservers+1, len(webserver_ips)+1):
+                    v.destroy(f"www{server_number}")
+            self.__customer.prod_env.deployed = True
+            self.__persist_customer_data()
     
-    def get_username(self) -> str:
-        return self.__customer.username
+    def delete_prod_environment(self) -> None:
+        """
+        Destroys vagrant environment and removes production environment files
+        """
+        env_dir = build_customer_env_dir(self.get_customer_number(), "prod")
+        v = vagrant.Vagrant(root=env_dir, quiet_stderr=False, quiet_stdout=False)
+        print("Running vagrant destroy...")
+        v.destroy()
+
+        dfh.delete_prod_enviroment(self.get_customer_number())
+
+        # Update domain model and write to persistent storage
+        self.__customer.prod_env.deployed = False
+
+        raise NotImplementedError
 
     def print_deployment_info(self) -> None:
         customer_info = cdu.get_customer(self.get_customer_number())
@@ -158,6 +220,13 @@ class CustomerContextManager:
                     print('\t\t%s:\t%s'%(server.replace('_ip', ''), prod_env.get('webservers').get(server)))
 
         print('')
+
+    def get_customer_number(self) -> int:
+        return self.__customer.customer_number
+    
+    def get_username(self) -> str:
+        return self.__customer.username
+
     
     def __persist_customer_data(self) -> None:
         """

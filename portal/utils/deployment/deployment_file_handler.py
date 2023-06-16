@@ -1,10 +1,11 @@
 import os
 import shutil
+from .customer_env_dir_builder import build_customer_env_dir
 from utils.deployment.j2_template_modifier import modify_vagrantfile_test_env, modify_vagrantfile_prod_env
 
 
 def prepare_test_env_files(customer_number: int, webserver_ip: str, database_ip: str) -> None:
-    env_dir = f'./deployments/customer_{customer_number}/test'
+    env_dir = build_customer_env_dir(customer_number, "test")
     if not os.path.exists(env_dir):
         os.makedirs(env_dir)
 
@@ -20,7 +21,7 @@ def prepare_test_env_files(customer_number: int, webserver_ip: str, database_ip:
     
 
 def prepare_prod_env_files(customer_number: int, webserver_ips: list[str], loadbalancer_ip: str, database_ip: str) -> None:
-    env_dir = f'./deployments/customer_{customer_number}/prod'
+    env_dir = build_customer_env_dir(customer_number, "prod")
     if not os.path.exists(env_dir):
         os.makedirs(env_dir)
 
